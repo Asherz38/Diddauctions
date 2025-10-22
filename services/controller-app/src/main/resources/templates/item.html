@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title th:text="${item.name} + ' - Auction'"></title>
+  <!-- auto-refresh: handled via JS below so we don't wipe form inputs while the user is typing -->
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
+    .muted { color: #666; font-size: .9rem; }
+    .box { border: 1px solid #e3e3e3; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+    label { display: inline-block; min-width: 120px; }
+    input[type="number"], input[type="text"] { width: 200px; }
+  </style>
+</head>
+<body>
+  <p><a href="/ui">← Back to search</a></p>
+  <h1 th:text="${item.name}"></h1>
+  <div class="muted" th:text="${item.description}"></div>
+  <div>Type: <b th:text="${item.auctionType}"></b></div>
+
+  <div class="box">
+    <h3>Auction</h3>
+    <div>Current price: $<span th:text="${auction.currentPrice}">0</span></div>
+    <div th:if="${auction.endTime}">
+      Ends at: <span id="endTime" th:text="${auction.endTime}"></span>
+      <div>Time remaining: <b id="remaining">--</b></div>
+    </div>
+    <div th:if="${auction.highestBidderId}">Highest bidder: <span th:text="${auction.highestBidderId}"></span></div>
+    <div>Status: <b th:text="${auction.status}">OPEN</b></div>
+  </div>
+
+  <script>
+    (function(){
+      const endEl = document.getElementById('endTime');
+      const remEl = document.getElementById('remaining');
+      if (!endEl || !remEl) return;
+      const endIso = endEl.textContent.trim();
+      const end = new Date(endIso).getTime();
+      function tick(){
+        const now = Date.now();
+        const diff = Math.max(0, Math.floor((end - now)/1000));
+        const m = Math.floor(diff/60), s = diff%60;
+        remEl.textContent = m+':' + (s<10?'0':'') + s;
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+  </script>
+
+  <script>
+    // Refresh the page every 5s only when the user isn't interacting with inputs
+    (function(){
+      const REFRESH_MS = 5000;
+      let dirty = false;
+      document.addEventListener('input', function(e){
+        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA')) {
+          dirty = true; // user started typing; pause auto-refresh until navigation
+        }
+      }, {capture: true});
+      setInterval(function(){
+        const ae = document.activeElement;
+        const hasFocus = ae && (ae.tagName === 'INPUT' || ae.tagName === 'SELECT' || ae.tagName === 'TEXTAREA' || ae.tagName === 'BUTTON');
+        if (!hasFocus && !dirty) {
+          window.location.reload();
+        }
+      }, REFRESH_MS);
+    })();
+  </script>
+
+  <div th:if="${item.auctionType} == 'FORWARD' and auction.status != 'CLOSED'" class="box">
+    <h3>Place a Bid (Forward)</h3>
+    <form th:action="@{'/ui/auctions/' + ${item.id} + '/bids'}" method="post">
+      <p>
+        <label>Bidder ID</label>
+        <input type="number" name="bidderId" required/>
+      </p>
+      <p>
+        <label>Amount</label>
+        <input type="number" name="amount" min="1" required/>
+      </p>
+      <p><button type="submit">BID</button></p>
+    </form>
+  </div>
+
+  <div th:if="${item.auctionType} == 'DUTCH' and auction.status != 'CLOSED'" class="box">
+    <h3>Buy Now (Dutch)</h3>
+    <form th:action="@{'/ui/auctions/' + ${item.id} + '/buy-now'}" method="post">
+      <p>
+        <label>Bidder ID</label>
+        <input type="number" name="bidderId" required/>
+      </p>
+      <p><button type="submit">Buy Now</button></p>
+    </form>
+  </div>
+
+  <div th:if="${auction.status} == 'CLOSED'" class="box">
+    <h3>Auction Ended</h3>
+    <a th:href="@{'/ui/ended/' + ${item.id}}">Go to Pay Now</a>
+  </div>
+
+  <div th:if="${item.auctionType} == 'FORWARD' and auction.status != 'CLOSED'" class="box">
+    <h3>Withdraw Last Bid (within 30s)</h3>
+    <form th:action="@{'/ui/auctions/' + ${item.id} + '/withdraw'}" method="post">
+      <p>
+        <label>Bidder ID</label>
+        <input type="number" name="bidderId" required/>
+        <button type="submit">Withdraw</button>
+      </p>
+    </form>
+  </div>
+
+  <div th:if="${item.auctionType} == 'DUTCH' and auction.status != 'CLOSED'" class="box">
+    <h3>Seller: Decrease Dutch Price</h3>
+    <form th:action="@{'/ui/auctions/' + ${item.id} + '/decrease'}" method="post">
+      <p>
+        <label>Decrement</label>
+        <input type="number" name="decrement" min="1" required/>
+        <button type="submit">Decrease</button>
+      </p>
+    </form>
+  </div>
+</body>
+</html>

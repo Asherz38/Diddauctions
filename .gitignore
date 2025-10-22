@@ -1,0 +1,25 @@
+# Maven
+**/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+**/.gradle/
+**/build/
+
+# IDEs
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.vscode/
+
+# OS
+.DS_Store
+
+# Python env
+.venv/
+__pycache__/
+
+# Node
+node_modules/

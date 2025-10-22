@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Login</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
+    .box { border: 1px solid #e3e3e3; border-radius: 8px; padding: 1rem; max-width: 420px; }
+    label { display: block; margin-top: .5rem; }
+    input { width: 260px; }
+  </style>
+</head>
+<body>
+  <h1>Sign In</h1>
+  <div class="box">
+    <p th:if="${param.error} != null" style="color:#b00020;">
+      Invalid username or password. Please try again or <a href="/ui/sign-up">create an account</a>.
+    </p>
+    <form action="/ui/login" method="post">
+      <label>Username</label>
+      <input type="text" name="username" required/>
+      <label>Password</label>
+      <input type="password" name="password" required/>
+      <p style="margin-top:1rem"><button type="submit">Sign In</button></p>
+    </form>
+    <p><a href="/ui/sign-up">Create an account</a> · <a href="/ui/forgot">Forgot password?</a></p>
+  </div>
+</body>
+</html>

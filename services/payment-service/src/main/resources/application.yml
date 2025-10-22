@@ -1,0 +1,10 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: payment-service
+services:
+  catalogue:
+    base-url: http://localhost:8081
+  auction:
+    base-url: http://localhost:8082

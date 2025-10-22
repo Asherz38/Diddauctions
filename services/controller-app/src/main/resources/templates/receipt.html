@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Receipt</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
+    .box { border: 1px solid #e3e3e3; border-radius: 8px; padding: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Payment Receipt</h1>
+  <div class="box">
+    <p>Status: <b th:text="${receipt.status}"></b></p>
+    <p>Item ID: <span th:text="${receipt.itemId}"></span></p>
+    <p>User ID: <span th:text="${receipt.userId}"></span></p>
+    <p>Item Price: $<span th:text="${receipt.itemPrice}"></span></p>
+    <p>Shipping Cost: $<span th:text="${receipt.shippingCost}"></span></p>
+    <p>Total Charged: $<span th:text="${receipt.totalCharged}"></span></p>
+    <p>Shipping Time: <span th:text="${receipt.shippingTimeDays}"></span> days</p>
+    <p>Paid At: <span th:text="${receipt.paidAt}"></span></p>
+    <p th:if="${receipt.message}">Message: <span th:text="${receipt.message}"></span></p>
+  </div>
+  <p><a href="/ui">Back to search</a></p>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Error</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
+    .box { border: 1px solid #e3e3e3; border-radius: 8px; padding: 1rem; background: #fff8f8; }
+    .muted { color: #666; }
+  </style>
+</head>
+<body>
+  <h1>Something went wrong</h1>
+  <div class="box">
+    <p th:text="${message}">Unexpected error.</p>
+  </div>
+  <p class="muted">Tip: Make sure all services are running: 8081 (catalogue), 8082 (auction), 8083 (payment), 8084 (user), 8080 (gateway).</p>
+  <p><a href="/ui">Back to Search</a> · <a href="/swagger-ui/index.html" target="_blank">Swagger UI</a></p>
+</body>
+</html>

@@ -1,0 +1,14 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: controller-app
+services:
+  catalogue:
+    base-url: http://localhost:8081
+  auction:
+    base-url: http://localhost:8082
+  payment:
+    base-url: http://localhost:8083
+  user:
+    base-url: http://localhost:8084

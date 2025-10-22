@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Forgot Password</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
+    .box { border: 1px solid #e3e3e3; border-radius: 8px; padding: 1rem; max-width: 480px; }
+    label { display: block; margin-top: .5rem; }
+    input { width: 260px; }
+    .muted { color: #666; }
+  </style>
+</head>
+<body>
+  <h1>Forgot Password</h1>
+  <div class="box">
+    <form action="/ui/forgot" method="post">
+      <label>Username</label>
+      <input type="text" name="username" required/>
+      <p style="margin-top:1rem"><button type="submit">Request Reset</button></p>
+    </form>
+    <p class="muted" th:text="${info}"></p>
+    <p th:if="${resetToken}">Demo reset token: <code th:text="${resetToken}"></code></p>
+    <p><a href="/ui/reset">Reset password with token</a></p>
+  </div>
+</body>
+</html>

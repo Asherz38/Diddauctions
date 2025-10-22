@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Auction Ended</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
+    .box { border: 1px solid #e3e3e3; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+    label { display: inline-block; min-width: 120px; }
+  </style>
+</head>
+<body>
+  <p><a th:href="@{'/ui/items/' + ${itemId}}">← Back to item</a></p>
+  <h1>Auction Ended</h1>
+  <div class="box">
+    <p>Status: <b th:text="${auction.status}">CLOSED</b></p>
+    <p>Final price: $<span th:text="${auction.currentPrice}">0</span></p>
+    <p th:if="${auction.highestBidderId}">Winner: <b th:text="${auction.highestBidderId}"></b></p>
+  </div>
+
+  <div class="box">
+    <h3>Pay Now</h3>
+    <form th:action="@{'/ui/pay/' + ${itemId}}" method="get">
+      <p>
+        <label>Winner User ID</label>
+        <input type="number" name="userId" required/>
+      </p>
+      <p>
+        <label>Expedited Shipping</label>
+        <input type="checkbox" name="expedited" value="true"/>
+      </p>
+      <p><button type="submit">Continue to Payment</button></p>
+    </form>
+  </div>
+</body>
+</html>

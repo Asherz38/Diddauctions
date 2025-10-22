@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Auction - Search</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
+    header { margin-bottom: 1rem; }
+    .items { margin-top: 1rem; }
+    .item { padding: .75rem 1rem; border: 1px solid #e3e3e3; border-radius: 8px; margin-bottom: .5rem; }
+    .item h3 { margin: 0 0 .25rem; }
+    .muted { color: #666; font-size: .9rem; }
+    form.inline { display: inline; }
+  </style>
+  </head>
+<body>
+<header>
+  <h1>Browse Items</h1>
+  <nav>
+    <a href="/ui/sell">Sell Item</a> |
+    <a href="/ui/logout">Logout</a>
+  </nav>
+  <form method="get" action="/ui">
+    <input type="text" name="q" th:value="${q}" placeholder="Search keyword"/>
+    <button type="submit">Search</button>
+  </form>
+  <p class="muted"><a href="/swagger-ui/index.html" target="_blank">Swagger UI</a></p>
+  <hr/>
+</header>
+
+<section class="items">
+  <div th:if="${#lists.isEmpty(items)}">No items found.</div>
+  <div th:each="it : ${items}" class="item">
+    <h3 th:text="${it.name}"></h3>
+    <div class="muted" th:text="${it.description}"></div>
+    <div>
+      Type: <span th:text="${it.auctionType}"></span>
+      &nbsp; | &nbsp;
+      Starting: $<span th:text="${it.startingPrice}"></span>
+      &nbsp; | &nbsp;
+      <a th:href="@{'/ui/items/' + ${it.id}}">View & Bid</a>
+    </div>
+  </div>
+  </section>
+
+</body>
+</html>

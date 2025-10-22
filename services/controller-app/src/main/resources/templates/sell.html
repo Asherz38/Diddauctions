@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Sell Item</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .box { border: 1px solid #e3e3e3; border-radius: 8px; padding: 1rem; }
+    label { display: block; margin-top: .5rem; }
+    input, select, textarea { width: 280px; }
+  </style>
+</head>
+<body>
+  <p><a href="/ui">← Back to search</a></p>
+  <h1>Sell Item</h1>
+  <div class="box">
+    <form action="/ui/sell" method="post">
+      <label>Name</label>
+      <input type="text" name="name" required/>
+      <label>Description</label>
+      <textarea name="description" rows="3" required></textarea>
+      <label>Category</label>
+      <input type="text" name="category" required/>
+      <label>Image URL</label>
+      <input type="text" name="imageUrl"/>
+      <label>Keywords</label>
+      <input type="text" name="keywords" required/>
+      <label>Auction Type</label>
+      <select name="auctionType">
+        <option th:each="t : ${auctionTypes}" th:value="${t}" th:text="${t}"></option>
+      </select>
+      <label>Starting Price</label>
+      <input type="number" name="startingPrice" min="0" required/>
+      <label>Reserve Price (optional)</label>
+      <input type="number" name="reservePrice" min="0"/>
+      <label>Duration (seconds)</label>
+      <input type="number" name="durationSeconds" min="1" required/>
+      <label>Shipping Cost (Regular)</label>
+      <input type="number" name="shippingCostRegular" min="0" required/>
+      <label>Shipping Cost (Expedited)</label>
+      <input type="number" name="shippingCostExpedited" min="0" required/>
+      <label>Shipping Time (days)</label>
+      <input type="number" name="shippingTimeDays" min="1" required/>
+      <label>Condition</label>
+      <select name="condition">
+        <option th:each="c : ${conditions}" th:value="${c}" th:text="${c}"></option>
+      </select>
+      <label>Quantity</label>
+      <input type="number" name="quantity" min="1" value="1" required/>
+      <p style="margin-top:1rem"><button type="submit">Create & Start Auction</button></p>
+    </form>
+  </div>
+</body>
+</html>

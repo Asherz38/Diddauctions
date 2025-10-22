@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Reset Password</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
+    .box { border: 1px solid #e3e3e3; border-radius: 8px; padding: 1rem; max-width: 480px; }
+    label { display: block; margin-top: .5rem; }
+    input { width: 260px; }
+  </style>
+</head>
+<body>
+  <h1>Reset Password</h1>
+  <div class="box">
+    <form action="/ui/reset" method="post">
+      <label>Reset Token</label>
+      <input type="text" name="token" required/>
+      <label>New Password</label>
+      <input type="password" name="newPassword" required/>
+      <p style="margin-top:1rem"><button type="submit">Set Password</button></p>
+    </form>
+    <p><a href="/ui/login">Back to login</a></p>
+  </div>
+</body>
+</html>

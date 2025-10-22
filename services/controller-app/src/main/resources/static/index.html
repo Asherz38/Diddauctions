@@ -1,0 +1,223 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Auction Gateway Tester</title>
+  <style>
+    body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; margin: 16px; }
+    h1 { margin-bottom: 4px; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; }
+    section { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; width: 360px; }
+    label { display: block; font-size: 12px; color: #374151; margin-top: 6px; }
+    input, select, textarea { width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; }
+    button { margin-top: 8px; padding: 8px 12px; border: 0; background: #2563eb; color: white; border-radius: 6px; cursor: pointer; }
+    button:disabled { background: #93c5fd; cursor: not-allowed; }
+    pre { background: #0b1021; color: #e5e7eb; padding: 8px; border-radius: 6px; max-height: 240px; overflow: auto; }
+    small { color: #6b7280; }
+  </style>
+</head>
+<body>
+  <h1>Auction Gateway Tester</h1>
+  <p><small>Use this quick page or go to <a href="/swagger-ui/index.html" target="_blank">Swagger UI</a> for full docs.</small></p>
+
+  <div class="row">
+    <section>
+      <h3>1) Create Item</h3>
+      <label>Name<input id="ci-name" value="Demo Item" /></label>
+      <label>Description<textarea id="ci-desc">An example item</textarea></label>
+      <label>Category<input id="ci-cat" value="misc" /></label>
+      <label>Image URL<input id="ci-img" value="" /></label>
+      <label>Auction Type
+        <select id="ci-auction">
+          <option>FORWARD</option>
+          <option>DUTCH</option>
+        </select>
+      </label>
+      <label>Keywords<input id="ci-keywords" value="demo,test" /></label>
+      <label>Starting Price (cents)<input id="ci-start" type="number" value="1000" /></label>
+      <label>Reserve Price (cents, optional)<input id="ci-reserve" type="number" value="0" /></label>
+      <label>Shipping Regular (cents)<input id="ci-ship-reg" type="number" value="500" /></label>
+      <label>Shipping Expedited (cents)<input id="ci-ship-exp" type="number" value="1200" /></label>
+      <label>Shipping Time (days)<input id="ci-ship-days" type="number" value="3" /></label>
+      <label>Condition
+        <select id="ci-cond">
+          <option>NEW</option>
+          <option>USED</option>
+          <option>REFURBISHED</option>
+        </select>
+      </label>
+      <label>Quantity<input id="ci-qty" type="number" value="1" /></label>
+      <button onclick="createItem()">Create</button>
+      <pre id="ci-out"></pre>
+    </section>
+
+    <section>
+      <h3>2) Start Auction</h3>
+      <label>Item ID<input id="sa-item" type="number" /></label>
+      <label>Type<select id="sa-type"><option>FORWARD</option><option>DUTCH</option></select></label>
+      <label>Starting Price (cents)<input id="sa-start" type="number" value="1000" /></label>
+      <label>Duration (seconds)<input id="sa-dur" type="number" value="300" /></label>
+      <label>Reserve (cents, optional)<input id="sa-reserve" type="number" value="0" /></label>
+      <button onclick="startAuction()">Start</button>
+      <pre id="sa-out"></pre>
+    </section>
+
+    <section>
+      <h3>3) Place Bid</h3>
+      <label>Item ID<input id="b-item" type="number" /></label>
+      <label>Bidder ID<input id="b-user" type="number" value="1" /></label>
+      <label>Amount (cents)<input id="b-amt" type="number" value="1200" /></label>
+      <button onclick="bid()">Bid</button>
+      <pre id="b-out"></pre>
+    </section>
+
+    <section>
+      <h3>4) Buy Now (Dutch)</h3>
+      <label>Item ID<input id="bn-item" type="number" /></label>
+      <label>Bidder ID<input id="bn-user" type="number" value="1" /></label>
+      <button onclick="buyNow()">Buy Now</button>
+      <pre id="bn-out"></pre>
+    </section>
+
+    <section>
+      <h3>4b) Decrease Dutch Price</h3>
+      <label>Item ID<input id="dc-item" type="number" /></label>
+      <label>Decrement (cents)<input id="dc-dec" type="number" value="50" /></label>
+      <button onclick="decrease()">Decrease</button>
+      <pre id="dc-out"></pre>
+    </section>
+
+    <section>
+      <h3>5) Pay (Winner only)</h3>
+      <label>Token (Bearer …)
+        <input id="pay-token" placeholder="Bearer ey..." />
+      </label>
+      <label>Item ID<input id="pay-item" type="number" /></label>
+      <label>User ID (will be overridden by token)<input id="pay-user" type="number" value="1" /></label>
+      <label>Amount (cents) = item price + shipping<input id="pay-amt" type="number" value="1500" /></label>
+      <label>Shipping<select id="pay-ship"><option value="STANDARD">STANDARD</option><option value="EXPRESS">EXPRESS</option></select></label>
+      <label>Street<input id="pay-street" value="123 Main St" /></label>
+      <label>City<input id="pay-city" value="Toronto" /></label>
+      <label>Country<input id="pay-country" value="Canada" /></label>
+      <label>Postal Code<input id="pay-postal" value="A1A1A1" /></label>
+      <label>Card Number<input id="pay-card" value="4111111111111111" /></label>
+      <label>Card Name<input id="pay-cardname" value="Test User" /></label>
+      <label>Card Expiry<input id="pay-exp" value="12/30" /></label>
+      <label>Card CVV<input id="pay-cvv" value="123" /></label>
+      <button onclick="pay()">Pay</button>
+      <pre id="pay-out"></pre>
+    </section>
+
+    <section>
+      <h3>Helper: Search Items</h3>
+      <label>Query<input id="s-q" value="" /></label>
+      <button onclick="searchItems()">Search</button>
+      <pre id="s-out"></pre>
+    </section>
+  </div>
+
+  <script>
+    const base = '/api';
+
+    async function createItem(){
+      const reserve = num('ci-reserve');
+      const body = {
+        name: val('ci-name'),
+        description: val('ci-desc'),
+        category: val('ci-cat'),
+        imageUrl: val('ci-img') || null,
+        auctionType: val('ci-auction'),
+        keywords: val('ci-keywords'),
+        startingPrice: num('ci-start'),
+        reservePrice: reserve > 0 ? reserve : null,
+        shippingCostRegular: num('ci-ship-reg'),
+        shippingCostExpedited: num('ci-ship-exp'),
+        shippingTimeDays: num('ci-ship-days'),
+        condition: val('ci-cond'),
+        quantity: num('ci-qty')
+      };
+      out('ci-out', await post(`${base}/items`, body));
+    }
+
+    async function startAuction(){
+      const reserve = num('sa-reserve');
+      const body = {
+        itemId: num('sa-item'),
+        type: val('sa-type'),
+        startingPrice: num('sa-start'),
+        durationSeconds: num('sa-dur'),
+        reservePrice: reserve > 0 ? reserve : null
+      };
+      out('sa-out', await post(`${base}/auctions/start`, body));
+    }
+
+    async function bid(){
+      const itemId = num('b-item');
+      const body = { bidderId: num('b-user'), amount: num('b-amt') };
+      out('b-out', await post(`${base}/auctions/${itemId}/bids`, body));
+    }
+
+    async function buyNow(){
+      const itemId = num('bn-item');
+      const body = { bidderId: num('bn-user') };
+      out('bn-out', await post(`${base}/auctions/${itemId}/buy-now`, body));
+    }
+
+    async function decrease(){
+      const itemId = num('dc-item');
+      const body = { decrement: num('dc-dec') };
+      out('dc-out', await post(`${base}/auctions/${itemId}/decrease`, body));
+    }
+
+    async function pay(){
+      const token = val('pay-token');
+      const headers = token ? { 'Authorization': token } : {};
+      const expedited = val('pay-ship') === 'EXPRESS';
+      const body = {
+        itemId: num('pay-item'),
+        userId: num('pay-user'),
+        amount: num('pay-amt'),
+        expeditedShipping: expedited,
+        addressStreet: val('pay-street'),
+        addressCity: val('pay-city'),
+        addressCountry: val('pay-country'),
+        postalCode: val('pay-postal'),
+        cardNumber: val('pay-card'),
+        cardName: val('pay-cardname'),
+        cardExpiry: val('pay-exp'),
+        cardCvv: val('pay-cvv')
+      };
+      out('pay-out', await post(`${base}/payments`, body, headers));
+    }
+
+    async function searchItems(){
+      const q = encodeURIComponent(val('s-q'));
+      out('s-out', await get(`${base}/items/search?q=${q}`));
+    }
+
+    async function get(url){
+      try {
+        const r = await fetch(url);
+        const t = await r.text();
+        return fmt(r, t);
+      } catch (e){ return `ERR ${e}` }
+    }
+    async function post(url, body, headers={}){
+      try {
+        const r = await fetch(url, { method: 'POST', headers: { 'Content-Type':'application/json', ...headers }, body: JSON.stringify(body)});
+        const t = await r.text();
+        return fmt(r, t);
+      } catch (e){ return `ERR ${e}` }
+    }
+    function fmt(r, t){
+      let pretty = t;
+      try { pretty = JSON.stringify(JSON.parse(t), null, 2); } catch {}
+      return `${r.status} ${r.statusText}\n\n${pretty}`;
+    }
+    const val = id => document.getElementById(id).value;
+    const num = id => Number(val(id));
+    const out = (id, v) => document.getElementById(id).textContent = v;
+  </script>
+</body>
+</html>
