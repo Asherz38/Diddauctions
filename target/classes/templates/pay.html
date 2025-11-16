@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Payment</title>
+  <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+  <div class="auth-container">
+    <h1>Payment</h1>
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+    
+    <div class="card">
+      <p>Item: <strong th:text="${item.name}">Item</strong></p>
+      <p>Winning Price: $<strong id="win" th:text="${#numbers.formatDecimal(item.currentPrice, 1, 'COMMA', 2, 'POINT')}">0.00</strong></p>
+      <p>Shipping Price: $<strong id="ship" th:text="${#numbers.formatDecimal(shipping, 1, 'COMMA', 2, 'POINT')}">0.00</strong></p>
+      <label style="display:flex; align-items:center; gap:.5rem; margin-top:.5rem;">
+        <input type="checkbox" id="expedite" name="expedite" form="payForm"/>
+        Expedite Shipment (+ $<span id="extra" th:text="${#numbers.formatDecimal(expedite, 1, 'COMMA', 2, 'POINT')}">0.00</span>)
+      </label>
+      <p style="margin-top:.5rem;">Total: $<strong id="total">0.00</strong></p>
+    </div>
+    <div class="card" th:if="${addr != null}">
+      <p><strong>Shipping Address</strong></p>
+      <p th:text="${addr.firstName} + ' ' + ${addr.lastName}">Name</p>
+      <p><span th:text="${addr.streetNumber}">1</span> <span th:text="${addr.streetName}">Main</span></p>
+      <p><span th:text="${addr.city}">City</span>, <span th:text="${addr.country}">Country</span> <span th:text="${addr.postalCode}">Postal</span></p>
+    </div>
+
+    <div th:if="${isWinner}">
+      <form id="payForm" method="post" th:action="@{/pay}" class="card">
+        <input type="hidden" name="id" th:value="${item.id}"/>
+        <div>
+          <label>Card Number
+            <input type="text" inputmode="numeric" name="cardNumber" placeholder="1234 5678 9012 3456" required />
+          </label>
+        </div>
+        <div>
+          <label>Name on Card
+            <input type="text" name="nameOnCard" placeholder="Full Name" required />
+          </label>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:.5rem;">
+          <label>Exp. Month
+            <input type="number" name="expMonth" min="1" max="12" required />
+          </label>
+          <label>Exp. Year
+            <input type="number" name="expYear" min="24" max="2099" required />
+          </label>
+          <label>CVC
+            <input type="number" name="cvc" min="100" max="9999" required />
+          </label>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:.5rem;">
+          <button type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+    <div th:if="${!isWinner}" class="error">Only the winning bidder can pay.</div>
+    <a class="link" href="/catalog">Back to Catalogue</a>
+  </div>
+  <script>
+    (function(){
+      function toNum(id){ var el=document.getElementById(id); return el? Number(el.textContent):0; }
+      function update(){
+        var win = toNum('win');
+        var ship = toNum('ship');
+        var extra = toNum('extra');
+        var exp = document.getElementById('expedite').checked ? extra : 0;
+        document.getElementById('total').textContent = (win + ship + exp).toFixed(2);
+      }
+      var chk = document.getElementById('expedite');
+      if (chk){ chk.addEventListener('change', update); }
+      update();
+
+      
+    })();
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Sign-In / Sign-Up</title>
+  <link rel="stylesheet" href="/css/styles.css"/>
+  <script>
+    function showForm(which) {
+      const sIn = document.getElementById('signin');
+      const sUp = document.getElementById('signup');
+      if (which === 'signin') { sIn.style.display = 'block'; sUp.style.display = 'none'; }
+      else { sIn.style.display = 'none'; sUp.style.display = 'block'; }
+    }
+    window.addEventListener('DOMContentLoaded', () => showForm('signin'));
+  </script>
+  <style>
+    
+    .switch button.active { background: #0a7; color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <h1>Welcome</h1>
+    <p class="muted">Please sign-in or create an account.</p>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+    <div th:if="${msg}" class="info" th:text="${msg}"></div>
+
+    <div class="switch">
+      <button type="button" onclick="showForm('signin')">Sign-In</button>
+      <button type="button" onclick="showForm('signup')">Sign-Up</button>
+    </div>
+
+    <form id="signin" class="card" method="post" action="/auth/signin">
+      <label>Username
+        <input type="text" name="username" required autofocus/>
+      </label>
+      <label>Password
+        <input type="password" name="password" required/>
+      </label>
+      <label>OTP code (if 2FA enabled)
+        <input type="text" name="code" pattern="[0-9]{6}" placeholder="6-digit" />
+      </label>
+      <button type="submit">Sign In</button>
+    </form>
+    <a class="link" href="/auth/forgot">Forgot password?</a>
+
+    <form id="signup" class="card" method="post" action="/auth/signup" style="display:none">
+      <label>Username
+        <input type="text" name="username" required/>
+      </label>
+      <label>Password
+        <input type="password" name="password" minlength="8" required/>
+      </label>
+      <label>Confirm Password
+        <input type="password" name="confirm" minlength="8" required/>
+      </label>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:.5rem;">
+        <label>First Name
+          <input type="text" name="firstName" required/>
+        </label>
+        <label>Last Name
+          <input type="text" name="lastName" required/>
+        </label>
+      </div>
+      <label>Street Name
+        <input type="text" name="streetName" required/>
+      </label>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:.5rem;">
+        <label>Street Number
+          <input type="text" name="streetNumber" required/>
+        </label>
+        <label>City
+          <input type="text" name="city" required/>
+        </label>
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:.5rem;">
+        <label>Country
+          <input type="text" name="country" required/>
+        </label>
+        <label>Postal Code
+          <input type="text" name="postalCode" required/>
+        </label>
+      </div>
+      <label style="display:flex; align-items:center; gap:.5rem;">
+        <input type="checkbox" name="enable2fa"/> Enable Two-Factor Authentication (TOTP)
+      </label>
+      <button type="submit">Create Account</button>
+    </form>
+  </div>
+</body>
+</html>
+

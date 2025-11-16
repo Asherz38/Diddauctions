@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Sell Item</title>
+  <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo">Auction House</div>
+    <nav>
+      <a class="link" href="/catalog">Catalogue</a>
+      <a class="link" href="/logout">Sign out</a>
+    </nav>
+  </header>
+  <div class="auth-container">
+    <h1>Sell an Item</h1>
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+    <form class="card" method="post" action="/sell" style="display:grid; gap:.6rem;">
+      <label>Item Name
+        <input type="text" name="name" required>
+      </label>
+      <label>Description
+        <textarea name="description" rows="3" style="width:100%;"></textarea>
+      </label>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:.6rem;">
+        <label>Starting Price ($)
+          <input type="number" name="startingPrice" step="0.01" min="0" required>
+        </label>
+        <label>Auction Type
+          <select name="auctionType" id="auctionType">
+            <option value="FORWARD">Forward (highest bid)</option>
+            <option value="DUTCH">Dutch (buy now)</option>
+          </select>
+        </label>
+      </div>
+      <div id="durationRow" style="display:grid; grid-template-columns: 2fr 1fr; gap:.6rem;">
+        <label>Duration
+          <input type="number" name="duration" min="1" placeholder="e.g., 2"/>
+        </label>
+        <label>Unit
+          <select name="unit">
+            <option value="hours">Hours</option>
+            <option value="minutes">Minutes</option>
+            <option value="days">Days</option>
+          </select>
+        </label>
+      </div>
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:.6rem;">
+        <label>Shipping Price ($)
+          <input type="number" name="shippingPrice" step="0.01" min="0" value="0">
+        </label>
+        <label>Expedite Price ($)
+          <input type="number" name="expeditePrice" step="0.01" min="0" value="0">
+        </label>
+        <label>Shipping Days
+          <input type="number" name="shippingDays" min="1" value="5">
+        </label>
+      </div>
+      <div style="display:flex; justify-content:flex-end; margin-top:.5rem;">
+        <button type="submit">Create Auction</button>
+      </div>
+    </form>
+  </div>
+  <script>
+    (function(){
+      var type = document.getElementById('auctionType');
+      var row = document.getElementById('durationRow');
+      function sync(){ row.style.display = (type.value === 'FORWARD') ? 'grid' : 'none'; }
+      type.addEventListener('change', sync); sync();
+    })();
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,17 @@
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/AuthApplication.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/config/DataInitializer.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/config/ItemsInitializer.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/model/Item.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/model/TopBid.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/model/User.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/repo/BidRepository.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/repo/ItemRepository.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/repo/PaymentRepository.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/repo/UserRepository.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/service/AuthService.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/service/TotpUtil.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/web/AuthController.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/web/CatalogController.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/web/PaymentController.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/web/SellController.java
+/Users/asherzaidi/Downloads/ITEC 4020 Deliverable (JAVA edition)/src/main/java/com/example/auth/web/ViewUtils.java

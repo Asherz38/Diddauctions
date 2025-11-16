@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Catalogue</title>
+  <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo">Auction House</div>
+    <nav>
+      <a class="link" href="/dashboard">Dashboard</a>
+      <a class="link" href="/sell">Sell Item</a>
+      <a class="link" href="/sell/manage">Manage Sales</a>
+      <a class="link" href="/logout">Sign out</a>
+    </nav>
+  </header>
+
+  <main class="catalog">
+    <form class="search" action="/catalog" method="get">
+      <input type="text" name="q" th:value="${q}" placeholder="Search"/>
+      <button type="submit" title="Search">🔍</button>
+    </form>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+    <div th:if="${msg}" class="info" th:text="${msg}"></div>
+    <div th:if="${selectedItemId}" class="info">Selected item is locked for this session: <strong th:text="${selectedItemName}">Item</strong>. Sign out to change.</div>
+
+    <div class="card">
+      <form action="/catalog/bid" method="get">
+      <table class="items">
+        <thead>
+          <tr>
+            <th>Item Name</th>
+            <th>Current Price</th>
+            <th>Auction Type</th>
+            <th>Remaining Time</th>
+            <th>Select</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="it: ${items}" th:attr="data-item-id=${it.id}">
+            <td>
+              <div><strong th:text="${it.name}">Item</strong></div>
+              <div class="muted" th:text="${it.description}">Description</div>
+            </td>
+            <td>$<span th:text="${#numbers.formatDecimal(it.currentPrice, 1, 'COMMA', 2, 'POINT')}">0.00</span></td>
+            <td th:text="${it.auctionType}">FORWARD</td>
+            <td class="remaining" th:attr="data-remaining=${it.remainingSeconds}" th:text="${T(com.example.auth.web.ViewUtils).fmtDuration(it.remainingSeconds)}">0:00</td>
+            <td style="text-align:center"><input type="radio" name="id" th:value="${it.id}"
+               th:checked="${selectedItemId} != null and ${selectedItemId} == ${it.id}"
+               th:disabled="(${selectedItemId} != null and ${selectedItemId} != ${it.id}) or ${it.remainingSeconds} == 0"/></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="display:flex; justify-content:flex-end; margin-top:.75rem;">
+        <button type="submit" id="bidBtn" disabled>BID</button>
+      </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    
+    (function(){
+      function fmt(sec){
+        if (sec == null || sec <= 0) return 'Now';
+        var h = Math.floor(sec/3600); var m = Math.floor((sec%3600)/60); var s = sec%60;
+        return h>0 ? (h+":"+String(m).padStart(2,'0')+":"+String(s).padStart(2,'0')) : (m+":"+String(s).padStart(2,'0'));
+      }
+      function tick(){
+        document.querySelectorAll('td.remaining').forEach(function(cell){
+          var v = cell.getAttribute('data-remaining');
+          if (v === null || v === '') return;
+          var sec = parseInt(v,10);
+          if (isNaN(sec)) return;
+          sec = Math.max(0, sec-1);
+          cell.textContent = fmt(sec);
+          cell.setAttribute('data-remaining', sec);
+          if (sec === 0){
+            
+            var row = cell.closest('tr');
+            var radio = row && row.querySelector('input[type=radio]');
+            if (radio) radio.disabled = true;
+          }
+        });
+      }
+      setInterval(tick, 1000);
+      
+      const radios = document.querySelectorAll('input[type=radio][name=id]');
+      const btn = document.getElementById('bidBtn');
+      function updateBtn(){
+        const any = Array.from(radios).some(r => r.checked && !r.disabled);
+        if (btn) btn.disabled = !any;
+      }
+      radios.forEach(r => r.addEventListener('change', updateBtn));
+      updateBtn();
+    })();
+  </script>
+
+</body>
+</html>
+

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Payment Successful</title>
+  <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+  <div class="auth-container">
+    <h1>Receipt</h1>
+    <div class="card">
+      <p>Receipt #: <strong th:text="${receiptId}">123</strong></p>
+      <p>Item: <strong th:text="${item.name}">Item</strong></p>
+      <p>Winning Price: $<strong th:text="${#numbers.formatDecimal(winning, 1, 'COMMA', 2, 'POINT')}">0.00</strong></p>
+      <p>Shipping: $<strong th:text="${#numbers.formatDecimal(shipping, 1, 'COMMA', 2, 'POINT')}">0.00</strong></p>
+      <p th:if="${extra > 0}">Expedite: $<strong th:text="${#numbers.formatDecimal(extra, 1, 'COMMA', 2, 'POINT')}">0.00</strong></p>
+      <p>Total Paid: $<strong th:text="${#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT')}">0.00</strong></p>
+    </div>
+
+    <div class="card">
+      <p><strong>Shipping Details</strong></p>
+      <div th:if="${addr != null}">
+        <p th:text="${addr.firstName} + ' ' + ${addr.lastName}">Name</p>
+        <p><span th:text="${addr.streetNumber}">1</span> <span th:text="${addr.streetName}">Main</span></p>
+        <p><span th:text="${addr.city}">City</span>, <span th:text="${addr.country}">Country</span> <span th:text="${addr.postalCode}">Postal</span></p>
+      </div>
+      <p>The item will be shipped in <strong th:text="${shipDays}">5</strong> days.</p>
+    </div>
+
+    <a class="link" href="/catalog">Back to Catalogue</a>
+  </div>
+</body>
+</html>
+

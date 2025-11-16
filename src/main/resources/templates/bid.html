@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Bid</title>
+  <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo">Auction House</div>
+    <nav>
+      <a class="link" href="/catalog">Back to Catalogue</a>
+      <a class="link" href="/logout">Sign out</a>
+    </nav>
+  </header>
+  <div class="auth-container">
+    <h1 th:text="${item.name}">Item</h1>
+    <p class="muted" th:text="${item.description}">Description</p>
+    <div class="info">This item is locked for your current session. Sign out to select a different item.</div>
+    <div class="card">
+      <p>Current Price: $<strong id="currentPrice" th:text="${#numbers.formatDecimal(item.currentPrice, 1, 'COMMA', 2, 'POINT')}">0.00</strong></p>
+      <p>Auction Type: <strong th:text="${item.auctionType}">FORWARD</strong></p>
+      <p>Remaining Time: <strong class="remaining" th:attr="data-remaining=${item.remainingSeconds}" th:text="${T(com.example.auth.web.ViewUtils).fmtDuration(item.remainingSeconds)}">—</strong></p>
+      <p>Highest Bid Offer: $<strong id="topAmount" th:text="${topAmount != null ? #numbers.formatDecimal(topAmount, 1, 'COMMA', 2, 'POINT') : '0.00'}">0.00</strong> by <strong id="topUser" th:text="${topUser != null ? topUser : '—'}">—</strong></p>
+    </div>
+    <form th:if="${item.auctionType} == 'FORWARD'" class="card" th:action="@{/catalog/bid}" method="post" style="display:flex; gap:.5rem; align-items:center;">
+      <input type="hidden" name="id" th:value="${item.id}"/>
+      <input type="number" name="amount" step="0.01" min="0" placeholder="Enter your price ..." required style="flex:1"/>
+      <button type="submit">BID</button>
+    </form>
+    <form th:if="${item.auctionType} == 'DUTCH'" class="card" th:action="@{/catalog/buy-now}" method="post" style="display:flex; justify-content:flex-end;">
+      <input type="hidden" name="id" th:value="${item.id}"/>
+      <button type="submit">Buy Now</button>
+    </form>
+  </div>
+  <script>
+    (function(){
+      function fmt(sec){
+        if (sec == null || sec <= 0) return 'Now';
+        var h = Math.floor(sec/3600); var m = Math.floor((sec%3600)/60); var s = sec%60;
+        return h>0 ? (h+":"+String(m).padStart(2,'0')+":"+String(s).padStart(2,'0')) : (m+":"+String(s).padStart(2,'0'));
+      }
+      var el = document.querySelector('.remaining');
+      if (!el) return;
+      function tick(){
+        var v = el.getAttribute('data-remaining');
+        if (v === null || v === '') return;
+        var sec = parseInt(v,10);
+        if (isNaN(sec)) return;
+        sec = Math.max(0, sec-1);
+        el.textContent = fmt(sec);
+        el.setAttribute('data-remaining', sec);
+      }
+      setInterval(tick, 1000);
+
+      
+      var idEl = document.querySelector('input[name=id]');
+      if (idEl) {
+        function refresh(){
+          fetch('/catalog/bid/state?id=' + encodeURIComponent(idEl.value))
+            .then(r => r.json()).then(data => {
+              if (!data) return;
+              if (data.currentPrice != null) document.getElementById('currentPrice').textContent = Number(data.currentPrice).toFixed(2);
+              if (data.topAmount != null) document.getElementById('topAmount').textContent = Number(data.topAmount).toFixed(2);
+              if (data.topUser != null) document.getElementById('topUser').textContent = data.topUser;
+              if (data.remainingSeconds != null) {
+                el.setAttribute('data-remaining', data.remainingSeconds);
+                el.textContent = fmt(data.remainingSeconds);
+              }
+              if (data.status === 'CLOSED') {
+                window.location.href = '/auction/ended?id=' + idEl.value;
+              }
+            }).catch(()=>{});
+        }
+        setInterval(refresh, 3000);
+      }
+    })();
+  </script>
+</body>
+</html>
+

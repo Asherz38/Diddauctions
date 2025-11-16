@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Manage Dutch Auctions</title>
+  <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo">Auction House</div>
+    <nav>
+      <a class="link" href="/catalog">Catalogue</a>
+      <a class="link" href="/sell">Sell Item</a>
+      <a class="link" href="/logout">Sign out</a>
+    </nav>
+  </header>
+  <main class="catalog">
+    <h1>Manage Dutch Auctions</h1>
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+    <div th:if="${msg}" class="info" th:text="${msg}"></div>
+    <div class="card">
+      <table class="items">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Current Price</th>
+            <th>New Price</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="it : ${items}">
+            <td><strong th:text="${it.name}">Item</strong></td>
+            <td>$<span th:text="${#numbers.formatDecimal(it.currentPrice, 1, 'COMMA', 2, 'POINT')}">0.00</span></td>
+            <td>
+              <form method="post" action="/sell/dutch/price" style="display:flex; gap:.5rem; align-items:center;">
+                <input type="hidden" name="id" th:value="${it.id}"/>
+                <input type="number" name="newPrice" step="0.01" min="0" placeholder="Lower price" required/>
+                <button type="submit">Update</button>
+              </form>
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>
+
+

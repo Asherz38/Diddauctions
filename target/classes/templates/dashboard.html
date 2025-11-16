@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+  <div class="auth-container">
+    <h1>Dashboard</h1>
+    <p>Hello, <strong th:text="${name}">User</strong>!</p>
+    <p class="muted">Signed in as <span th:text="${username}">username</span></p>
+    <p><a class="link" href="/catalog">Browse Catalogue</a></p>
+    <a class="link" href="/logout">Sign out</a>
+  </div>
+</body>
+</html>
+

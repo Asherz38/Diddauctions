@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Two-Factor Setup</title>
+  <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+  <div class="auth-container">
+    <h1>Two-Factor Authentication</h1>
+    <p>Scan this QR with your authenticator app (Google Authenticator, Microsoft Authenticator, Authy), or add the secret manually.</p>
+    <div class="card">
+      <div style="display:flex; gap:1rem; align-items:center;">
+        
+        <img alt="TOTP QR" width="220" height="220" th:if="${qrUrl != null}"
+             th:src="${qrUrl}"/>
+        <div th:if="${qrUrl == null}" class="muted">QR code unavailable; use the secret below to add manually.</div>
+        <div>
+          <p><strong>Secret:</strong> <code th:text="${secret}">SECRET</code></p>
+          <p th:if="${otpauth != null}"><a th:href="${otpauth}">Add to Authenticator (otpauth)</a></p>
+          <p th:if="${otpauth == null}" class="muted">Open your authenticator app and add an account with the secret above.</p>
+          <p class="muted">Issuer: AuthApp · 6 digits · 30s</p>
+        </div>
+      </div>
+    </div>
+    <div class="muted" style="margin-top: .5rem;">
+      Tip (Windows): ensure your PC and phone time are set to automatic and synced. TOTP codes require accurate time.
+    </div>
+    <a class="link" href="/dashboard">Continue to dashboard</a>
+  </div>
+</body>
+</html>

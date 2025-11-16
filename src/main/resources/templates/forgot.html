@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Forgot Password</title>
+  <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+  <div class="auth-container">
+    <h1>Reset Password</h1>
+    <p class="muted">Enter your username, then verify using OTP (if 2FA) or your postal code.</p>
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+    <form class="card" method="post" action="/auth/forgot">
+      <label>Username
+        <input type="text" name="username" required />
+      </label>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:.5rem;">
+        <label>OTP code (if 2FA)
+          <input type="text" name="code" pattern="[0-9]{6}" placeholder="6-digit" />
+        </label>
+        <label>Postal Code (if no 2FA)
+          <input type="text" name="postal" />
+        </label>
+      </div>
+      <label>New Password
+        <input type="password" name="newPassword" minlength="8" required />
+      </label>
+      <label>Confirm New Password
+        <input type="password" name="confirm" minlength="8" required />
+      </label>
+      <button type="submit">Update Password</button>
+    </form>
+    <a class="link" href="/auth">Back to Sign-In</a>
+  </div>
+</body>
+</html>
+

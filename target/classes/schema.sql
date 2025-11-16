@@ -1,0 +1,47 @@
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  street_name TEXT NOT NULL,
+  street_number TEXT NOT NULL,
+  city TEXT NOT NULL,
+  country TEXT NOT NULL,
+  postal_code TEXT NOT NULL,
+  twofa_secret TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS items (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  description TEXT,
+  status TEXT NOT NULL CHECK (status IN ('UPCOMING','ACTIVE','CLOSED')),
+  starting_price REAL DEFAULT 0,
+  current_price REAL DEFAULT 0,
+  auction_type TEXT NOT NULL CHECK (auction_type IN ('FORWARD','DUTCH')) DEFAULT 'FORWARD',
+  closes_at TEXT,
+  shipping_price REAL DEFAULT 0,
+  expedite_price REAL DEFAULT 0
+  , shipping_days INTEGER DEFAULT 5
+  , seller_user_id INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS bids (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  item_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  amount REAL NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS payments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  item_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  total REAL NOT NULL,
+  expedited INTEGER NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
